@@ -1,0 +1,14 @@
+type: object
+required:
+  - code
+  - message
+properties:
+  code:
+    type: string
+    description: A static name for the error type
+  message:
+    type: string
+    description: A short human readable description of the error
+  path:
+    type: ['string', 'null']
+    description: Describes the variable missing or malformed

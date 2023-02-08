@@ -1,0 +1,49 @@
+delete:
+  summary: Delete a host
+  operationId: deleteHost
+  tags:
+    - hosts
+  parameters:
+    - name: hostID
+      in: path
+      required: true
+      schema:
+        type: string
+      example: host-24NVITKMNU3CYCEDNFWKAOBX7I
+  security:
+    - api_key:
+        - 'hosts:delete'
+  responses:
+    200:
+      description: Deleted host successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - data
+              - metadata
+            properties:
+              data:
+                type: object
+              metadata:
+                type: object
+    404:
+      description: Host not found
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - errors
+            properties:
+              errors:
+                $ref: ../../schemas/Errors.yaml
+            example:
+              errors:
+                - code: ERR_NOT_FOUND
+                  message: 'resource not found'
+    401:
+      $ref: ../../responses/ErrorUnauthorized.yaml
+    default:
+      $ref: ../../responses/UnexpectedError.yaml

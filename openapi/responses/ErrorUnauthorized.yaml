@@ -1,0 +1,13 @@
+description: Unauthorized Error
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        errors:
+          $ref: ../schemas/Errors.yaml
+          readOnly: true
+      example:
+        errors:
+          - code: ERR_UNAUTHORIZED
+            message: unauthorized

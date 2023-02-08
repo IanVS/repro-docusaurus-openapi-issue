@@ -1,0 +1,151 @@
+get:
+  summary: Create a host and enrollment code
+  operationId: createHostandGetEnrollmentCode
+  tags:
+    - hosts
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            name:
+              description: Name of the new host
+              type: string
+            roleID:
+              description: ID of the role you want to assign
+              type: ['string', 'null']
+            networkID:
+              description: ID of your network
+              type: string
+          examples:
+            - name: My new host
+              roleID: role-PZEDBXHQEXKACJPZ6XOQTIAJA4
+              networkID: network-KAOWMXZHZWCVMGGFKM22XEGYLE
+  security:
+    - api_key:
+        - 'hosts:create'
+        - 'hosts:enroll'
+  responses:
+    '200':
+      description: Expected response to a valid request
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - host
+            properties:
+              data:
+                type: object
+                properties:
+                  host:
+                    $ref: '../../schemas/Host.yaml'
+                  enrollmentCode:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      lifetimeSeconds:
+                        type: integer
+                        format: int64
+              metadata:
+                type: object
+            example:
+              data:
+                host:
+                  id: host-24NVITKMNU3CYCEDNFWKAOBX7I
+                  organizationID: org-F63A24JGCLJV3ZEUTLCBISGETA
+                  networkID: network-KAOWMXZHZWCVMGGFKM22XEGYLE
+                  roleID: role-PZEDBXHCEXKAKJPZ6XOQTIAJA4
+                  name: 'lol wat'
+                  ipAddress: 100.100.0.29
+                  staticAddresses: []
+                  listenPort: 0
+                  isLighthouse: false
+                  isRelay: false
+                  createdAt: 2023-01-25T18:15:27Z
+                  isBlocked: false
+                enrollmentCode:
+                  code: H8NEbm99QvupjqW1PsdVR9DNSiFmoQtJXyGTQxerlSU
+                  lifetimeSeconds: 86400
+              metadata:
+    400:
+      description: Validation errors
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - errors
+            properties:
+              errors:
+                $ref: ../../schemas/Errors.yaml
+          examples:
+            existingHostName:
+              summary: A host already exists with the name
+              value:
+                errors:
+                  - code: 'ERR_DUPLICATE_VALUE'
+                    message: 'value already exists'
+                    path: 'name'
+            cannotFindNetwork:
+              summary: Cannot find the supplied networkID
+              value:
+                errors:
+                  - code: 'ERR_INVALID_REFERENCE'
+                    message: 'referenced value is invalid (perhaps it does not exist?)'
+                    path: 'networkID'
+            duplicateIpAddress:
+              summary: A host with the ipAdress supplied already exists
+              value:
+                errors:
+                  - code: 'ERR_DUPLICATE_VALUE'
+                    message: 'value already exists'
+                    path: 'ipAddress'
+            cannotFindRole:
+              summary: Cannot find the supplied roleID
+              value:
+                errors:
+                  - code: 'ERR_INVALID_REFERENCE'
+                    message: 'referenced value is invalid (perhaps it does not exist?)'
+                    path: 'roleID'
+            missingRoleID:
+              summary: Missing the required parameter `roleID`
+              value:
+                errors:
+                  - code: 'ERR_MISSING_VALUE'
+                    message: 'must be present'
+                    path: 'roleID'
+            lighthouseXorRelay:
+              summary: A host may only be a lighthouse OR a relay not both
+              value:
+                errors:
+                  - code: 'ERR_INVALID_VALUE'
+                    message: 'lighthouse hosts must not also be relay hosts'
+            lighthouseNeedsStaticIP:
+              summary: A lighthouse requires at least one static IP address.
+              value:
+                errors:
+                  - code: 'ERR_INVALID_VALUE'
+                    message: 'lighthouse hosts must have at least one static ip address'
+                    path: 'staticAddresses'
+            lighthouseNeedsStaticPort:
+              summary: A lighthouse requires a static listen port, like `4242`
+              value:
+                errors:
+                  - code: 'ERR_INVALID_VALUE'
+                    message: 'lighthouse hosts must specify a static listen port'
+                    path: 'listenPort'
+            relayNeedsStaticPort:
+              summary: A relay requires a static listen port, like `4242`
+              value:
+                errors:
+                  - code: 'ERR_INVALID_VALUE'
+                    message: 'relay hosts must specify a static listen port'
+                    path: 'listenPort'
+    401:
+      $ref: ../../responses/ErrorUnauthorized.yaml
+    default:
+      $ref: '../../responses/UnexpectedError.yaml'

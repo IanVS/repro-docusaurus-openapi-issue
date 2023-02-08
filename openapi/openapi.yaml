@@ -1,0 +1,42 @@
+openapi: 3.1.0
+servers:
+  - url: https://api.defined.net
+    description: Default server
+info:
+  description: |
+    # Introduction
+    This API is documented in **OpenAPI format** and describes methods that can be invoked when using an api key from <https://admin.defined.net/settings/api-keys>
+
+    Each endpoint is versioned individually, under a `/vXX` endpoint, ex `/v1/hosts` would become `/v2/hosts` with a breaking change, while `/v1/host-and-enrollment-code` would remain at `/v1`
+
+    <SecurityDefinitions />
+  version: 0.0.1
+  title: Defined Networking API Docs
+  termsOfService: 'http://defined.net/terms/'
+  contact:
+    name: API Support
+    url: https://www.defined.net/contact?reason=Support
+  x-logo:
+    url: 'https://docs.defined.net/img/logo.svg'
+    altText: Defined Networking logo
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+externalDocs:
+  description: Find more about the API here
+  url: https://docs.defined.net/guides/automating-host-creation/
+tags:
+  - name: hosts
+    description: Operations requiring `host:*` scope
+paths:
+  /v1/host-and-enrollment-code:
+    $ref: './paths/v1/host-and-enrollment-code.yaml'
+  /v1/hosts/{hostID}:
+    $ref: './paths/v1/hosts.yaml'
+components:
+  securitySchemes:
+    api_key:
+      description: >
+        Get an api key from <https://admin.defined.net/settings/api-keys> with the perms for what you want to do.
+      type: http
+      scheme: bearer
