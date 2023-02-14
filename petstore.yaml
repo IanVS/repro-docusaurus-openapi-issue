@@ -971,8 +971,13 @@ components:
               type: integer
               format: int32
               description: The size of the pack the dog is from
-              default: 1
-              minimum: 1
+              minimum: 0
+              default: 0
+            packMembers:
+              type: array
+              items: 
+                type: string
+              default: []
           required:
             - packSize
     HoneyBee:
