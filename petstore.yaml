@@ -998,8 +998,9 @@ components:
       properties:
         id:
           description: Order ID
-          allOf:
-            - $ref: "#/components/schemas/Id"
+          type: integer
+          format: int64
+          minimum: 1
         petId:
           description: Pet ID
           allOf:

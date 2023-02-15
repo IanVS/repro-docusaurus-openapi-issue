@@ -1,9 +1,0 @@
-description: Server Error
-content:
-  application/json:
-    schema:
-      type: object
-      properties:
-        errors:
-          $ref: ../schemas/Errors.yaml
-          readOnly: true
